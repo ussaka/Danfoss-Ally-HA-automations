@@ -1,0 +1,70 @@
+blueprint:
+  name: Danfoss Ally time updater
+  description: >
+    ## Danfoss Ally time updater  
+
+    **Version: 1.0**  
+
+
+    Periodically update Danfoss Ally eTRV's time with z2m.  
+
+
+    [Need help?](https://github.com/ussaka/Danfoss-Ally-HA-integration?tab=readme-ov-file#installation)
+  domain: automation
+  author: Kasperi Kiviluoma
+
+  input:
+    ally_trv:
+      name: Ally eTRV
+      description: Device name must match with IEEE address
+      selector:
+        device:
+          entity:
+            - domain:
+                - climate
+          multiple: false
+    scheduler:
+      name: Update schedule
+      description: Recommended to run once a week
+      selector:
+        entity:
+          domain: schedule
+    dst_start:
+      name: DST start time
+      selector:
+        entity:
+          domain: input_datetime
+    dst_stop:
+      name: DST stop time
+      selector:
+        entity:
+          domain: input_datetime
+
+variables:
+  ally_trv: !input ally_trv
+  dst_start: !input dst_start
+  dst_stop: !input dst_stop
+
+trigger:
+  - platform: state
+    entity_id:
+      - !input scheduler
+    from: "off"
+    to: "on"
+
+action:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/{{ device_attr(ally_trv, 'name')}}/set
+      # Epoch is 00:00:00 1.1.2000 UTC instead of normal linux epoch
+      # Only write to bit 1 of the timeStatus will result in a change (0x02)
+      payload: |-
+        {"write":{"cluster":"genTime","options":{},"payload":{
+          "time":{{(utcnow().timestamp()-(as_timestamp('2000-01-01T00:00:00')))|int}},
+          "timeStatus":2,
+          "timeZone":{{now().utcoffset().total_seconds()|int}},
+          "dstStart":{{ state_attr(dst_start, 'timestamp') - (as_timestamp('2000-01-01T00:00:00'))|int}},
+          "dstEnd":{{ state_attr(dst_stop, 'timestamp') - (as_timestamp('2000-01-01T00:00:00'))|int}},
+          "dstShift":3600
+        }}}
+mode: single

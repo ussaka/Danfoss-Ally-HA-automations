@@ -63,7 +63,7 @@ action:
           "time":{{(utcnow().timestamp()-(as_timestamp('2000-01-01T00:00:00')))|int}},
           "timeStatus":2,
           "timeZone":{{now().utcoffset().total_seconds()|int}},
-          "dstStart":{{ state_attr(dst_start, 'timestamp') - (as_timestamp('2000-01-01T00:00:00'))|int}},
-          "dstEnd":{{ state_attr(dst_stop, 'timestamp') - (as_timestamp('2000-01-01T00:00:00'))|int}},
+          "dstStart":{{ (state_attr(dst_start, 'timestamp') - (as_timestamp('2000-01-01T00:00:00')))|int}},
+          "dstEnd":{{ (state_attr(dst_stop, 'timestamp') - (as_timestamp('2000-01-01T00:00:00')))|int}},
           "dstShift":3600
         }}}

@@ -1,0 +1,165 @@
+blueprint:
+  name: Danfoss Ally set weekly schedule
+  description: >
+    ## Danfoss Ally set weekly schedule
+
+    **Version: 1.0**  
+
+
+    Set Danfoss Ally eTRV's weekly schedule with z2m.  
+
+
+    [Need help?](https://github.com/ussaka/Danfoss-Ally-HA-integration?tab=readme-ov-file#weekly-schedule-script)
+  domain: script
+  author: Kasperi Kiviluoma
+
+  input:
+    ally_trv:
+      name: Ally eTRV
+      description: Device name must match with IEEE address
+      selector:
+        device:
+          entity:
+            - domain:
+                - climate
+          multiple: false
+    schedule:
+      name: Weekly schedule
+      description: Weekdays to run the schedule
+      selector:
+        number:
+          min: 0
+          max: 127
+          unit_of_measurement: Bitmap (bit0=sunday, bit6=saturday)
+          mode: box
+    transition1_setpoint:
+      name: Transition 1 heat set point
+      selector:
+        number:
+          min: 15
+          max: 25
+          unit_of_measurement: °C
+          mode: box
+    transition1_time:
+      name: Transition 1 time
+      selector:
+        number:
+          min: 0
+          max: 65535
+          unit_of_measurement: Minutes since midnight
+          mode: box
+    transition2_setpoint:
+      name: Transition 2 heat set point
+      selector:
+        number:
+          min: 15
+          max: 25
+          unit_of_measurement: °C
+          mode: box
+    transition2_time:
+      name: Transition 2 time
+      selector:
+        number:
+          min: 0
+          max: 65535
+          unit_of_measurement: Minutes since midnight
+          mode: box          
+    transition3_setpoint:
+      name: Transition 3 heat set point
+      selector:
+        number:
+          min: 15
+          max: 25
+          unit_of_measurement: °C
+          mode: box
+    transition3_time:
+      name: Transition 3 time
+      selector:
+        number:
+          min: 0
+          max: 65535
+          unit_of_measurement: Minutes since midnight
+          mode: box
+    transition4_setpoint:
+      name: Transition 4 heat set point
+      selector:
+        number:
+          min: 15
+          max: 25
+          unit_of_measurement: °C
+          mode: box
+    transition4_time:
+      name: Transition 4 time
+      selector:
+        number:
+          min: 0
+          max: 65535
+          unit_of_measurement: Minutes since midnight
+          mode: box 
+    transition5_setpoint:
+      name: Transition 5 heat set point
+      selector:
+        number:
+          min: 15
+          max: 25
+          unit_of_measurement: °C
+          mode: box
+    transition5_time:
+      name: Transition 5 time
+      selector:
+        number:
+          min: 0
+          max: 65535
+          unit_of_measurement: Minutes since midnight
+          mode: box
+    transition6_setpoint:
+      name: Transition 6 heat set point
+      selector:
+        number:
+          min: 15
+          max: 25
+          unit_of_measurement: °C
+          mode: box
+    transition6_time:
+      name: Transition 6 time
+      selector:
+        number:
+          min: 0
+          max: 65535
+          unit_of_measurement: Minutes since midnight
+          mode: box
+
+variables:
+  ally_trv: !input ally_trv
+  schedule: !input schedule
+  transition1_setpoint: !input transition1_setpoint
+  transition1_time: !input transition1_time
+  transition2_setpoint: !input transition2_setpoint
+  transition2_time: !input transition2_time
+  transition3_setpoint: !input transition3_setpoint
+  transition3_time: !input transition3_time
+  transition4_setpoint: !input transition4_setpoint
+  transition4_time: !input transition4_time
+  transition5_setpoint: !input transition5_setpoint
+  transition5_time: !input transition5_time
+  transition6_setpoint: !input transition6_setpoint
+  transition6_time: !input transition6_time
+
+sequence:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/{{ device_attr(ally_trv, 'name')}}/set
+      payload: |-
+        {
+          "weekly_schedule":{
+            "dayofweek": {{ (schedule) }},
+            "transitions":[
+              {"heatSetpoint":{{ (transition1_setpoint) }}, "transitionTime":{{ (transition1_time) }}},
+              {"heatSetpoint":{{ (transition2_setpoint) }}, "transitionTime":{{ (transition2_time) }}},
+              {"heatSetpoint":{{ (transition3_setpoint) }}, "transitionTime":{{ (transition3_time) }}},
+              {"heatSetpoint":{{ (transition4_setpoint) }}, "transitionTime":{{ (transition4_time) }}},
+              {"heatSetpoint":{{ (transition5_setpoint) }}, "transitionTime":{{ (transition5_time) }}},
+              {"heatSetpoint":{{ (transition6_setpoint) }}, "transitionTime":{{ (transition6_time) }}}
+            ]
+          }
+        }

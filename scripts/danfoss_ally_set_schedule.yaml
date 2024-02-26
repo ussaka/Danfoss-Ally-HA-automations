@@ -3,7 +3,7 @@ blueprint:
   description: >
     ## Danfoss Ally set weekly schedule
 
-    **Version: 1.0**  
+    **Version: 1.0.0**  
 
 
     Set Danfoss Ally eTRV's weekly schedule with z2m.  

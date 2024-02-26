@@ -3,7 +3,7 @@ blueprint:
   description: >
     ## Danfoss Ally time updater  
 
-    **Version: 1.0**  
+    **Version: 1.0.1**  
 
 
     Periodically update Danfoss Ally eTRV's time with z2m.  

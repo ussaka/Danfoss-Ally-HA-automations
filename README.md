@@ -19,7 +19,9 @@ Danfoss Ally has no knowledge of the current time. Zigbee coordinator must send 
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-integration%2Fblob%2Fmain%2Fautomations%2Fdanfoss_ally_time_updater.yaml)
 
 # Weekly schedule script
-Note! The weekly schedule is lost after power cycle or OTA or error state.
+### Note!
+- The weekly schedule is lost after power cycle or OTA or error state.
+- HA DST start helper will convert set time to the new local time. E.g. 31/03/2024 03:00 --> 31/03/2024 04:00. For now fix by setting the time minute before DST start time e.g. 02:59.
 
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-integration%2Fblob%2Fmain%2Fscripts%2Fdanfoss_ally_set_schedule.yaml)
 

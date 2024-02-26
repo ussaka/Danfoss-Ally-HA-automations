@@ -31,6 +31,7 @@ blueprint:
           domain: schedule
     dst_start:
       name: DST start time
+      description: Set one minute before real start time, e.g. 03:00 --> 02:59
       selector:
         entity:
           domain: input_datetime

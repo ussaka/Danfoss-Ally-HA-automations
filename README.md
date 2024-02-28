@@ -37,3 +37,6 @@ Automatically adjust eTRV's own temperature with offset. The external temperatur
 
 ### Radiator covered = true
 Rely only for the external temperature. The external temperature needs to be send at least every 30 minutes but no more often than every 5 minutes @ every 0,1K change.
+
+# Support
+[![Buy_me_a_coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-black?style=social&logo=buy-me-a-coffee&logoColor=black&link=https%3A%2F%2Fwww.buymeacoffee.com%2Fussaka)](https://www.buymeacoffee.com/ussaka)

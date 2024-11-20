@@ -3,20 +3,17 @@ blueprint:
   description: >
     ## Danfoss Ally time updater  
 
-    **Version: 1.0.1**  
+    **Version: 1.0.2**  
 
 
     Periodically update Danfoss Ally eTRV's time with z2m.  
 
-
-    [Need help?](https://github.com/ussaka/Danfoss-Ally-HA-integration?tab=readme-ov-file#installation)
   domain: automation
   author: Kasperi Kiviluoma
 
   input:
-    ally_trv:
+    ally_etrv:
       name: Ally eTRV
-      description: Device name must match with IEEE address
       selector:
         device:
           entity:
@@ -42,21 +39,21 @@ blueprint:
           domain: input_datetime
 
 variables:
-  ally_trv: !input ally_trv
+  ally_etrv: !input ally_etrv
   dst_start: !input dst_start
   dst_stop: !input dst_stop
 
-trigger:
-  - platform: state
+triggers:
+  - trigger: state
     entity_id:
       - !input scheduler
     from: "off"
     to: "on"
 
-action:
-  - service: mqtt.publish
+actions:
+  - action: mqtt.publish
     data:
-      topic: zigbee2mqtt/{{ device_attr(ally_trv, 'name')}}/set
+      topic: zigbee2mqtt/{{ device_attr(ally_etrv, 'name')}}/set
       # Epoch is 00:00:00 1.1.2000 UTC instead of normal linux epoch
       # as_timestamp will return timeZone adjusted timestamp instead of UTC
       # Only write to bit 1 of the timeStatus will result in a change (0x02)

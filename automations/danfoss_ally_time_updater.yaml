@@ -3,10 +3,9 @@ blueprint:
   description: >
     ## Danfoss Ally time updater  
 
-    **Version: 1.0.2**  
+    **Version: 1.1.2**  
 
-
-    Periodically update Danfoss Ally eTRV's time with z2m.  
+    Periodically update Danfoss Ally eTRV's time with z2m.
 
   domain: automation
   author: Kasperi Kiviluoma
@@ -28,12 +27,16 @@ blueprint:
           domain: schedule
     dst_start:
       name: DST start time
-      description: Set one minute before real start time, e.g. 03:00 --> 02:59
+      description: >
+        Set one minute before real start time, e.g. 03:00 --> 02:59.
+        The set day is automatically updated to the current year's last Sunday of the set month.
       selector:
         entity:
           domain: input_datetime
     dst_stop:
       name: DST stop time
+      description: >
+        The set day is automatically updated to the current year's last Sunday of the set month.
       selector:
         entity:
           domain: input_datetime
@@ -51,6 +54,30 @@ triggers:
     to: "on"
 
 actions:
+  - action: input_datetime.set_datetime
+    target:
+      entity_id: !input dst_start
+    data:
+      date: >
+        {% set year = now().year %}
+        {% set month = state_attr(dst_start, 'month') %}
+        {% set last_day_of_month = (now().replace(year=year, month=month, day=1) + timedelta(days=32)).replace(day=1) - timedelta(days=1) %}
+        {% set days_to_subtract = (last_day_of_month.weekday() + 1) % 7 %}
+        {% set last_sunday = last_day_of_month - timedelta(days=days_to_subtract) %}
+        {{ last_sunday.date() }}
+
+  - action: input_datetime.set_datetime
+    target:
+      entity_id: !input dst_stop
+    data:
+      date: >
+        {% set year = now().year %}
+        {% set month = state_attr(dst_stop, 'month') %}
+        {% set last_day_of_month = (now().replace(year=year, month=month, day=1) + timedelta(days=32)).replace(day=1) - timedelta(days=1) %}
+        {% set days_to_subtract = (last_day_of_month.weekday() + 1) % 7 %}
+        {% set last_sunday = last_day_of_month - timedelta(days=days_to_subtract) %}
+        {{ last_sunday.date() }}
+
   - action: mqtt.publish
     data:
       topic: zigbee2mqtt/{{ device_attr(ally_etrv, 'name')}}/set

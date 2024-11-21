@@ -2,7 +2,7 @@
 Danfoss Ally eTRV automations and scripts for Home Assistant using [Zigbee2MQTT](https://www.zigbee2mqtt.io/). Tested to work with firmware v1.28(00.28.0008 00.28).
 
 # Time updater automation
-![version](https://img.shields.io/badge/version-1.0.2-blue?style=plastic)
+![version](https://img.shields.io/badge/version-1.1.2-blue?style=plastic)
 
 Danfoss Ally has no knowledge of the current time. Zigbee coordinator must send the current time to it. Recommended time update is on weekly interval.
 

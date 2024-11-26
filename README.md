@@ -6,6 +6,9 @@ Danfoss Ally eTRV automations and scripts for Home Assistant using [Zigbee2MQTT]
 
 Danfoss Ally has no knowledge of the current time. Zigbee coordinator must send the current time to it. Recommended time update is on weekly interval.
 
+### Note!
+- The script will automatically set DST helpers to last sunday of the current year and the helper's month. Please raise an issue if this is a problem for you.
+
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-integration%2Fblob%2Fmain%2Fautomations%2Fdanfoss_ally_time_updater.yaml)
 
 # Weekly schedule script

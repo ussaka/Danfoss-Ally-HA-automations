@@ -3,9 +3,10 @@ blueprint:
   description: >
     ## Danfoss Ally time updater  
 
-    **Version: 1.1.2**  
+    **Version: 1.2.2**  
 
-    Periodically update Danfoss Ally eTRV's time with z2m.
+    Periodically update Danfoss Ally eTRV's time with z2m.  
+    Need help? [Click here](https://github.com/ussaka/Danfoss-Ally-HA-automations?tab=readme-ov-file#time-updater-automation)
 
   domain: automation
   author: Kasperi Kiviluoma
@@ -18,7 +19,7 @@ blueprint:
           entity:
             - domain:
                 - climate
-          multiple: false
+          multiple: true
     scheduler:
       name: Update schedule
       description: Recommended to run once a week
@@ -78,18 +79,23 @@ actions:
         {% set last_sunday = last_day_of_month - timedelta(days=days_to_subtract) %}
         {{ last_sunday.date() }}
 
-  - action: mqtt.publish
-    data:
-      topic: zigbee2mqtt/{{ device_attr(ally_etrv, 'name')}}/set
-      # Epoch is 00:00:00 1.1.2000 UTC instead of normal linux epoch
-      # as_timestamp will return timeZone adjusted timestamp instead of UTC
-      # Only write to bit 1 of the timeStatus will result in a change (0x02)
-      payload: |-
-        {"write":{"cluster":"genTime","options":{},"payload":{
-          "time":{{ (utcnow().timestamp()-(as_timestamp('2000-01-01T00:00:00')+now().utcoffset().total_seconds()))|int }},
-          "timeStatus":2,
-          "timeZone":{{now().utcoffset().total_seconds()|int}},
-          "dstStart":{{ (state_attr(dst_start, 'timestamp')-as_timestamp('2000-01-01T00:00:00'))|int }},
-          "dstEnd":{{ (state_attr(dst_stop, 'timestamp')-as_timestamp('2000-01-01T00:00:00'))|int }},
-          "dstShift":3600
-        }}}
+  - repeat:
+      for_each: "{{ ally_etrv }}"
+      sequence:
+        - action: mqtt.publish
+          data:
+            topic: zigbee2mqtt/{{ device_attr(repeat.item, 'name')}}/set
+            # Epoch is 00:00:00 1.1.2000 UTC instead of normal linux epoch
+            # as_timestamp will return timeZone adjusted timestamp instead of UTC
+            # Only write to bit 1 of the timeStatus will result in a change (0x02)
+            payload: |-
+              {"write":{"cluster":"genTime","options":{},"payload":{
+                "time":{{ (utcnow().timestamp()-(as_timestamp('2000-01-01T00:00:00')+now().utcoffset().total_seconds()))|int }},
+                "timeStatus":2,
+                "timeZone":{{now().utcoffset().total_seconds()|int}},
+                "dstStart":{{ (state_attr(dst_start, 'timestamp')-as_timestamp('2000-01-01T00:00:00'))|int }},
+                "dstEnd":{{ (state_attr(dst_stop, 'timestamp')-as_timestamp('2000-01-01T00:00:00'))|int }},
+                "dstShift":3600
+              }}}
+        - delay:
+            seconds: 5

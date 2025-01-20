@@ -14,6 +14,28 @@ blueprint:
   author: Kasperi Kiviluoma
 
   input:
+    schedule:
+      name: Schedule
+      description: Weekdays to run the schedule
+      selector:
+        select:
+          options:
+            - label: Monday
+              value: "1"
+            - label: Tuesday
+              value: "2"
+            - label: Wednesday
+              value: "3"
+            - label: Thursday
+              value: "4"
+            - label: Friday
+              value: "5"
+            - label: Saturday
+              value: "6"
+            - label: Sunday
+              value: "0"
+          multiple: true
+          mode: list
     ally_trv:
       name: Ally eTRV
       description: Device name must match with IEEE address
@@ -23,15 +45,6 @@ blueprint:
             - domain:
                 - climate
           multiple: false
-    schedule:
-      name: Weekly schedule
-      description: Weekdays to run the schedule
-      selector:
-        number:
-          min: 0
-          max: 127
-          unit_of_measurement: Bitmap (bit0=sunday, bit6=saturday)
-          mode: box
     transition1_setpoint:
       name: Transition 1 heat set point
       selector:
@@ -146,13 +159,21 @@ variables:
   transition6_time: !input transition6_time
 
 sequence:
+  - variables:
+      bitmap: >-
+        {% set ns = namespace(bitmap=0) %}
+        {% for day in schedule %}
+          {% set ns.bitmap = ns.bitmap + (day | int) %}
+        {% endfor %}
+        {{ ns.bitmap }}
+
   - service: mqtt.publish
     data:
       topic: zigbee2mqtt/{{ device_attr(ally_trv, 'name')}}/set
       payload: |-
         {
           "weekly_schedule":{
-            "dayofweek": {{ (schedule) }},
+            "dayofweek": {{ bitmap }},
             "transitions":[
               {"heatSetpoint":{{ (transition1_setpoint) }}, "transitionTime":{{ (transition1_time) }}},
               {"heatSetpoint":{{ (transition2_setpoint) }}, "transitionTime":{{ (transition2_time) }}},

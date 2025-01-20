@@ -21,19 +21,19 @@ blueprint:
         select:
           options:
             - label: Monday
-              value: "1"
-            - label: Tuesday
               value: "2"
-            - label: Wednesday
-              value: "3"
-            - label: Thursday
+            - label: Tuesday
               value: "4"
+            - label: Wednesday
+              value: "8"
+            - label: Thursday
+              value: "16"
             - label: Friday
-              value: "5"
+              value: "32"
             - label: Saturday
-              value: "6"
+              value: "64"
             - label: Sunday
-              value: "0"
+              value: "1"
           multiple: true
           mode: list
     ally_trv:

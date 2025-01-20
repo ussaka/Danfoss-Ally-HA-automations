@@ -9,7 +9,7 @@ Danfoss Ally has no knowledge of the current time. Zigbee coordinator must send 
 ### Note!
 - The script will automatically set DST helpers to last sunday of the current year and the helper's month. Please raise an issue if this is a problem for you.
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-integration%2Fblob%2Fmain%2Fautomations%2Fdanfoss_ally_time_updater.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Freleases%2Fdownload%2Ftime-updater-v1.2.2%2Fdanfoss_ally_time_updater.yaml)
 
 # Weekly schedule script
 ![version](https://img.shields.io/badge/version-1.0.0-blue?style=plastic)
@@ -18,7 +18,7 @@ Danfoss Ally has no knowledge of the current time. Zigbee coordinator must send 
 - The weekly schedule is lost after power cycle or OTA or error state.
 - HA DST start helper will convert set time to the new local time. E.g. 31/03/2024 03:00 --> 31/03/2024 04:00. For now fix by setting the time minute before DST start time e.g. 02:59.
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-integration%2Fblob%2Fmain%2Fscripts%2Fdanfoss_ally_set_schedule.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Freleases%2Ftag%2Fset-schedule-v1.0.0)
 
 # External temperature sensor automation
 [Blueprint](https://community.home-assistant.io/t/zigbee2mqtt-danfoss-ally-send-external-temperature-to-trv-version-2/627564/8)

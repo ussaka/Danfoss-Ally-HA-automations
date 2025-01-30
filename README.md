@@ -1,8 +1,11 @@
 # Danfoss Ally Home Assistant automations & scripts
 Danfoss Ally eTRV automations and scripts for Home Assistant using [Zigbee2MQTT](https://www.zigbee2mqtt.io/). Tested to work with firmware v1.28(00.28.0008 00.28).
 
-# Updating
-The blueprints can be updated by importing them again overwriting the existing one. NOTE! Your existing script might not have input values in correct format. Best to remove any values in YAML editing view. Major version number (=v1.x.x) will be updated in this case.
+### Updating
+The blueprints can be updated by importing them again and overwriting the existing one. 
+
+### Breaking changes
+Major version number (=v1.x.x) will be updated if any breaking changes are implemented. In this case your existing script might not have input values in correct format. It is recommended to remove any existing input values in YAML editing view if updating to a new major version.
 
 # Time updater automation
 ![version](https://img.shields.io/badge/version-1.2.2-blue?style=plastic)
@@ -20,7 +23,7 @@ Danfoss Ally has no knowledge of the current time. Zigbee coordinator must send 
 ### Note!
 - The weekly schedule is lost after power cycle or OTA or error state.
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Freleases%2Fdownload%2Fset-schedule-v2.0.0)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Freleases%2Fdownload%2Fset-schedule-v2.0.0%2Fdanfoss_ally_set_schedule.yaml)
 
 # External temperature sensor automation
 [Blueprint](https://community.home-assistant.io/t/zigbee2mqtt-danfoss-ally-send-external-temperature-to-trv-version-2/627564/8)

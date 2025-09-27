@@ -1,0 +1,121 @@
+blueprint:
+  name: Danfoss Ally get weekly schedule
+  description: >
+    ## Danfoss Ally get weekly schedule
+
+    **Version: 1.0.0**  
+
+
+    [Need help?](https://github.com/ussaka/Danfoss-Ally-HA-integration?tab=readme-ov-file#get-weekly-schedule-script)
+  domain: script
+  author: Kasperi Kiviluoma
+
+  input:
+    ally_trv:
+      name: Danfoss Ally eTRV
+      description: Select the Ally eTRV
+      selector:
+        device:
+          filter:
+            - domain: climate
+    schedule:
+      name: Weekday
+      description: Select the weekday to query the schedule for
+      required: true
+      selector:
+        select:
+          options:
+            - label: Monday
+              value: "2"
+            - label: Tuesday
+              value: "4"
+            - label: Wednesday
+              value: "8"
+            - label: Thursday
+              value: "16"
+            - label: Friday
+              value: "32"
+            - label: Saturday
+              value: "64"
+            - label: Sunday
+              value: "1"
+          multiple: false
+          mode: list
+
+mode: single
+max_exceeded: silent
+
+variables:
+  day_bitmap: "{{ schedule | int }}"
+  device_name: "{{ device_attr(ally_trv, 'name') }}"
+  day_name_map:
+    "1": Sunday
+    "2": Monday
+    "4": Tuesday
+    "8": Wednesday
+    "16": Thursday
+    "32": Friday
+    "64": Saturday
+  selected_day: "{{ day_name_map[schedule|string] }}"
+  schedule_summary: ""
+
+action:
+  - alias: Send getWeeklySchedule for {{ selected_day }}
+    service: mqtt.publish
+    data:
+      topic: "zigbee2mqtt/{{ device_name }}/set"
+      payload: >
+        {
+          "command": {
+            "cluster": "hvacThermostat",
+            "command": "getWeeklySchedule",
+            "payload": {
+              "daystoreturn": {{ day_bitmap }},
+              "modetoreturn": 1
+            }
+          }
+        }
+
+  - wait_for_trigger:
+      - platform: mqtt
+        topic: "zigbee2mqtt/{{ device_name }}"
+        value_template: "{{ value_json.weekly_schedule is defined }}"
+    timeout: "00:00:30"
+    continue_on_timeout: false
+
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >-
+              {{ wait.trigger is defined and wait.trigger.payload_json.weekly_schedule is defined }}
+        sequence:
+          - variables:
+              response: "{{ wait.trigger.payload_json.weekly_schedule }}"
+              transitions: "{{ response.transitions | default([]) }}"
+              formatted_transitions: >-
+                {% if transitions | length == 0 %}
+                  No transitions.
+                {% else %}
+                {% for t in transitions %}
+                - {{ (t.time | int) // 60 }}:{{ '%02d' % ((t.time | int) % 60) }} → {{ t.heating_setpoint | default('n/a') }}°C
+                {% endfor %}
+                {% endif %}
+          - variables:
+              schedule_summary: >-
+                **{{ transitions | length }} transition{{ '' if transitions | length == 1 else 's' }} for {{ selected_day }}:**
+
+                {{ formatted_transitions }}
+
+      - conditions:
+          - condition: template
+            value_template: "{{ wait.trigger is not defined }}"
+        sequence:
+          - variables:
+              schedule_summary: >-
+                ⚠️ No response received for {{ selected_day }}, (day bitmap: {{ day_bitmap }})
+
+  - alias: Final Notification
+    service: persistent_notification.create
+    data:
+      title: Danfoss Ally schedule for {{ selected_day }}
+      message: "{{ schedule_summary }}"

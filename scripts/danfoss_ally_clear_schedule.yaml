@@ -1,0 +1,39 @@
+alias: Clear TRV Weekly Schedule
+description: Clear the weekly schedule for a selected day on a Danfoss Ally eTRV via Zigbee2MQTT.
+mode: single
+fields:
+  ally_trv:
+    name: Ally eTRV
+    required: true
+    selector:
+      device:
+        entity:
+          - domain:
+              - climate
+        multiple: false
+
+sequence:
+  - variables:
+      device_name: "{{ device_attr(ally_trv, 'name') }}"
+      clear_summary: ""
+  - alias: Send clearWeeklySchedule for {{ selected_day }}
+    service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/{{ device_name }}/set
+      payload: |-
+        {
+          "command": {
+            "cluster": "hvacThermostat",
+            "command": "clearWeeklySchedule",
+            "payload": {
+            }
+          }
+        }
+  - variables:
+      clear_summary: >-
+        🗑️ **aa** schedule cleared.
+  - alias: Final Notification
+    data:
+      title: TRV Weekly Schedule Cleared
+      message: "{{ clear_summary }}"
+    action: persistent_notification.create

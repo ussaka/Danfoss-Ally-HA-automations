@@ -16,8 +16,10 @@ blueprint:
       description: Select the Ally eTRV
       selector:
         device:
-          filter:
-            - domain: climate
+          entity:
+            - domain:
+                - climate
+          multiple: false
     schedule:
       name: Weekday
       description: Select the weekday to query the schedule for

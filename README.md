@@ -1,5 +1,5 @@
 # Danfoss Ally Home Assistant automations & scripts
-Danfoss Ally eTRV automations and scripts for Home Assistant using [Zigbee2MQTT](https://www.zigbee2mqtt.io/). Tested to work with firmware v1.28(00.28.0008 00.28).
+Danfoss Ally eTRV automations and scripts for Home Assistant using [Zigbee2MQTT](https://www.zigbee2mqtt.io/). Tested to work with firmware v1.32(v00.32).
 
 ### Updating
 The blueprints can be updated by importing them again and overwriting the existing one. 

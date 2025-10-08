@@ -1,39 +1,55 @@
-alias: Clear TRV Weekly Schedule
-description: Clear the weekly schedule for a selected day on a Danfoss Ally eTRV via Zigbee2MQTT.
+blueprint:
+  name: Danfoss Ally clear weekly schedule
+  description: >
+    ## Danfoss Ally clear weekly schedule
+
+    **Version: 1.0.0**  
+
+
+    [Need help?](https://github.com/ussaka/Danfoss-Ally-HA-integration?tab=readme-ov-file#clear-weekly-schedule-script)
+  domain: script
+  author: Kasperi Kiviluoma
+
+  input:
+    ally_trv:
+      name: Danfoss Ally eTRV
+      description: Select the Ally eTRV
+      selector:
+        device:
+          entity:
+            - domain:
+                - climate
+          multiple: false
+
 mode: single
-fields:
-  ally_trv:
-    name: Ally eTRV
-    required: true
-    selector:
-      device:
-        entity:
-          - domain:
-              - climate
-        multiple: false
+max_exceeded: silent
+
+variables:
+  ally_trv: !input ally_trv
+  device_name: "{{ device_attr(ally_trv, 'name') }}
+  clear_summary: ""
 
 sequence:
-  - variables:
-      device_name: "{{ device_attr(ally_trv, 'name') }}"
-      clear_summary: ""
-  - alias: Send clearWeeklySchedule for {{ selected_day }}
+  - alias: Send clearWeeklySchedule command to {{ device_name }}
     service: mqtt.publish
     data:
-      topic: zigbee2mqtt/{{ device_name }}/set
-      payload: |-
+      topic: "zigbee2mqtt/{{ device_name }}/set"
+      payload: >-
         {
           "command": {
             "cluster": "hvacThermostat",
             "command": "clearWeeklySchedule",
-            "payload": {
-            }
+            "payload": {}
           }
         }
-  - variables:
+
+  - alias: Set Notification Message
+    variables:
       clear_summary: >-
-        🗑️ **aa** schedule cleared.
+        Danfoss Ally schedule cleared for **{{ device_name }}**.
+
   - alias: Final Notification
+    service: persistent_notification.create
     data:
-      title: TRV Weekly Schedule Cleared
+      title: Danfoss Ally schedule cleared
       message: "{{ clear_summary }}"
-    action: persistent_notification.create

@@ -1,0 +1,242 @@
+alias: Danfoss Ally set weekly schedule with confirm
+description: >
+  ## Danfoss Ally set weekly schedule with confirmation
+
+  **Version: 2.3.0**
+
+  Set the weekly schedule for Danfoss Ally eTRVs via Zigbee2MQTT, then wait for
+  the device to confirm the schedule matches what was set.
+mode: single
+max_exceeded: silent
+fields:
+  ally_trv:
+    name: Danfoss Ally eTRV
+    required: true
+    selector:
+      device:
+        entity:
+          - domain: climate
+        multiple: false
+  schedule:
+    name: Weekdays
+    required: true
+    selector:
+      select:
+        options:
+          - label: Monday
+            value: "2"
+          - label: Tuesday
+            value: "4"
+          - label: Wednesday
+            value: "8"
+          - label: Thursday
+            value: "16"
+          - label: Friday
+            value: "32"
+          - label: Saturday
+            value: "64"
+          - label: Sunday
+            value: "1"
+        multiple: true
+        mode: list
+  num_transitions:
+    name: Number of transitions to send
+    required: true
+    selector:
+      number:
+        min: 1
+        max: 6
+        mode: slider
+  transition1_setpoint:
+    name: Transition 1 target temperature (°C)
+    required: true
+    selector:
+      number:
+        min: 0
+        max: 30
+        unit_of_measurement: °C
+        mode: box
+  transition1_time:
+    name: Transition 1 trigger time (minutes since midnight)
+    required: true
+    selector:
+      number:
+        min: 0
+        max: 1439
+        unit_of_measurement: min
+        mode: box
+  transition2_setpoint:
+    name: Transition 2 target temperature (°C)
+    selector:
+      number:
+        min: 0
+        max: 30
+        mode: box
+        unit_of_measurement: °C
+  transition2_time:
+    name: Transition 2 time
+    selector:
+      number:
+        min: 0
+        max: 1439
+        unit_of_measurement: min
+        mode: box
+  transition3_setpoint:
+    name: Transition 3 target temperature (°C)
+    selector:
+      number:
+        min: 0
+        max: 30
+        unit_of_measurement: °C
+        mode: box
+  transition3_time:
+    name: Transition 3 time
+    selector:
+      number:
+        min: 0
+        max: 1439
+        unit_of_measurement: min
+        mode: box
+  transition4_setpoint:
+    name: Transition 4 target temperature (°C)
+    selector:
+      number:
+        min: 0
+        max: 30
+        unit_of_measurement: °C
+        mode: box
+  transition4_time:
+    name: Transition 4 time
+    selector:
+      number:
+        min: 0
+        max: 1439
+        unit_of_measurement: min
+        mode: box
+  transition5_setpoint:
+    name: Transition 5 target temperature (°C)
+    selector:
+      number:
+        min: 0
+        max: 30
+        unit_of_measurement: °C
+        mode: box
+  transition5_time:
+    name: Transition 5 time
+    selector:
+      number:
+        min: 0
+        max: 1439
+        unit_of_measurement: min
+        mode: box
+  transition6_setpoint:
+    name: Transition 6 target temperature (°C)
+    selector:
+      number:
+        min: 0
+        max: 30
+        unit_of_measurement: °C
+        mode: box
+  transition6_time:
+    name: Transition 6 time
+    selector:
+      number:
+        min: 0
+        max: 1439
+        unit_of_measurement: min
+        mode: box
+sequence:
+  - variables:
+      device_name: "{{ device_attr(ally_trv, 'name') }}"
+      bitmap: |-
+        {% set ns = namespace(b=0) %} {% for d in schedule %}
+          {% set ns.b = ns.b + (d | int) %}
+        {% endfor %} {{ ns.b }}
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ bitmap == 0 }}"
+        sequence:
+          - data:
+              title: Danfoss Ally Schedule Error
+              message: ❌ No weekdays selected. Please select at least one day.
+            action: persistent_notification.create
+          - stop: No weekdays selected, aborting.
+  - variables:
+      transitions: >-
+        {% set list = [] %} {% if transition1_setpoint is not none and
+        transition1_time is not none %}
+          {% set list = list + [ {"heatSetpoint": transition1_setpoint, "transitionTime": {"hour": 15, "minute": 20}} ] %}
+        {% endif %} {% if transition2_setpoint is not none and transition2_time
+        is not none %}
+          {% set list = list + [ {"heatSetpoint": transition2_setpoint, "transitionTime": transition2_time} ] %}
+        {% endif %} {% if transition3_setpoint is not none and transition3_time
+        is not none %}
+          {% set list = list + [ {"heatSetpoint": transition3_setpoint, "transitionTime": transition3_time} ] %}
+        {% endif %} {% if transition4_setpoint is not none and transition4_time
+        is not none %}
+          {% set list = list + [ {"heatSetpoint": transition4_setpoint, "transitionTime": transition4_time} ] %}
+        {% endif %} {% if transition5_setpoint is not none and transition5_time
+        is not none %}
+          {% set list = list + [ {"heatSetpoint": transition5_setpoint, "transitionTime": transition5_time} ] %}
+        {% endif %} {% if transition6_setpoint is not none and transition6_time
+        is not none %}
+          {% set list = list + [ {"heatSetpoint": transition6_setpoint, "transitionTime": transition6_time} ] %}
+        {% endif %} {{ list[:num_transitions | int] | to_json }}
+  - alias: Send weekly schedule to TRV
+    data:
+      topic: zigbee2mqtt/{{ device_name }}/set
+      payload: |-
+        {
+          "weekly_schedule": {
+            "dayofweek": [
+                     {"day": "monday"},
+                     {"day": "tuesday"}
+                   ],
+            "numoftrans": {{ num_transitions }},
+            "mode": 1,
+            "transitions": {{ transitions }}
+          }
+        }
+    action: mqtt.publish
+  - wait_for_trigger:
+      - topic: zigbee2mqtt/{{ device_name }}
+        value_template: >-
+          {% set ws = value_json.weekly_schedule if value_json.weekly_schedule
+          is defined else none %} {% if ws is none %}
+            false
+          {% else %}
+            {# check dayofweek bitmask or days list equivalence #}
+            {% if ws.dayofweek is defined %}
+              {% set resp_bitmap = ws.dayofweek | int %}
+              {% if resp_bitmap != bitmap %}
+                {{ false }}
+              {% else %}
+                {# transitions check #}
+                {% set resp_trans = ws.transitions | default([]) %}
+                {% set sent = (transitions | from_json) %}
+                {% if resp_trans | length != sent | length %}
+                  {{ false }}
+                {% else %}
+                  {% set ok = true %}
+                  {% for i in range(sent | length) %}
+                    {% set exp = sent[i] %}
+                    {% set act = resp_trans[i] %}
+                    {% if exp.heatSetpoint != act.heatSetpoint or exp.transitionTime != act.transitionTime %}
+                      {% set ok = false %}
+                    {% endif %}
+                  {% endfor %}
+                  {{ ok }}
+                {% endif %}
+              {% endif %}
+            {% else %}
+              false
+            {% endif %}
+          {% endif %}
+        trigger: mqtt
+    timeout: "00:00:30"
+    continue_on_timeout: false
+  - data:
+      title: Danfoss Ally Schedule Set Confirmed
+      message: ✅ Schedule successfully confirmed on device {{ device_name }}.
+    action: persistent_notification.create

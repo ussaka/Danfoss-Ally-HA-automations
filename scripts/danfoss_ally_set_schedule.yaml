@@ -119,8 +119,6 @@ variables:
   day_list: "{{ inputs.schedule_days }}"
   transition_count: "{{ inputs.transition_count | int }}"
 
-trigger: []
-
 sequence:
   - variables:
       transition_entities: >

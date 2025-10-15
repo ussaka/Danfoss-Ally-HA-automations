@@ -25,7 +25,7 @@ max_exceeded: silent
 
 variables:
   ally_trv: !input ally_trv
-  device_name: "{{ state_attr(ally_trv, 'name') }}"
+  device_name: "{{ device_attr(ally_trv, 'name') }}"
   clear_summary: ""
 
 sequence:

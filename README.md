@@ -1,5 +1,5 @@
 # Danfoss Ally Home Assistant automations & scripts
-Danfoss Ally eTRV automations and scripts for Home Assistant using [Zigbee2MQTT](https://www.zigbee2mqtt.io/). Tested to work with firmware v1.28(00.28.0008 00.28).
+Danfoss Ally eTRV automations and scripts for Home Assistant using [Zigbee2MQTT](https://www.zigbee2mqtt.io/). Tested to work with firmware v1.32(v00.32).
 
 ### Updating
 The blueprints can be updated by importing them again and overwriting the existing one. 
@@ -7,13 +7,23 @@ The blueprints can be updated by importing them again and overwriting the existi
 ### Breaking changes
 Major version number (=v1.x.x) will be updated if any breaking changes are implemented. In this case your existing script might not have input values in correct format. It is recommended to remove any existing input values in YAML editing view if updating to a new major version.
 
-# Weekly schedule script
-![version](https://img.shields.io/badge/version-2.0.0-blue?style=plastic)
+# Weekly schedule scripts
+**Note!** The weekly schedule is lost after power cycle or OTA or error state.
 
-### Note!
-- The weekly schedule is lost after power cycle or OTA or error state.
+### Get weekly schedule
+Get weekly schedule from a Danfoss Ally eTRV device. Sends a persistent notification with all schedule transitions for the selected day.
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Freleases%2Fdownload%2Fset-schedule-v2.0.0%2Fdanfoss_ally_set_schedule.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Fblob%2Fussaka%2Ffix-set-and-add-get-clear-scripts%2Fscripts%2Fdanfoss_ally_get_schedule.yaml)
+
+### Set weekly schedule
+Set weekly schedule to a Danfoss Ally eTRV device for the selected days.
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Fblob%2Fussaka%2Ffix-set-and-add-get-clear-scripts%2Fscripts%2Fdanfoss_ally_set_schedule.yaml)
+
+### Clear weekly schedule
+Clear weekly schedule from Danfoss Ally eTRV device for all the days.
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Fblob%2Fussaka%2Ffix-set-and-add-get-clear-scripts%2Fscripts%2Fdanfoss_ally_clear_schedule.yaml)
 
 # External temperature sensor automation
 [Blueprint](https://community.home-assistant.io/t/zigbee2mqtt-danfoss-ally-send-external-temperature-to-trv-version-2/627564/8)

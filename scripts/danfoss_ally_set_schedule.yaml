@@ -3,184 +3,189 @@ blueprint:
   description: >
     ## Danfoss Ally set weekly schedule
 
-    **Version: 2.0.0**  
+    **Version: 2.0.1**
 
-
-    Set Danfoss Ally eTRV's weekly schedule with z2m.  
-
-
-    [Need help?](https://github.com/ussaka/Danfoss-Ally-HA-integration?tab=readme-ov-file#weekly-schedule-script)
-  domain: script
-  author: Kasperi Kiviluoma
-
+    [Need help?](https://github.com/ussaka/Danfoss-Ally-HA-integration?tab=readme-ov-file#get-weekly-schedule-script)
+  domain: automation
   input:
-    schedule:
-      name: Schedule
-      description: Weekdays to run the schedule
-      selector:
-        select:
-          options:
-            - label: Monday
-              value: "2"
-            - label: Tuesday
-              value: "4"
-            - label: Wednesday
-              value: "8"
-            - label: Thursday
-              value: "16"
-            - label: Friday
-              value: "32"
-            - label: Saturday
-              value: "64"
-            - label: Sunday
-              value: "1"
-          multiple: true
-          mode: list
     ally_trv:
-      name: Ally eTRV
+      name: Danfoss Ally eTRV
       selector:
         device:
           entity:
-            - domain:
-                - climate
-          multiple: false
+            domain: climate
+      required: true
+    schedule_days:
+      name: Weekdays
+      selector:
+        select:
+          multiple: true
+          mode: list
+          options:
+            - label: Monday
+              value: monday
+            - label: Tuesday
+              value: tuesday
+            - label: Wednesday
+              value: wednesday
+            - label: Thursday
+              value: thursday
+            - label: Friday
+              value: friday
+            - label: Saturday
+              value: saturday
+            - label: Sunday
+              value: sunday
+      required: true
+
     transition1_setpoint:
-      name: Transition 1 target temperature
+      name: Transition 1 temperature (°C)
       selector:
         number:
           min: 0
           max: 30
-          unit_of_measurement: °C
           mode: box
+          unit_of_measurement: °C
+      required: false
     transition1_time:
-      name: Transition 1 trigger time
+      name: Transition 1 time
       selector:
-        number:
-          min: 0
-          max: 65535
-          unit_of_measurement: Minutes since midnight
-          mode: box
+        time: {}
+      required: false
+
     transition2_setpoint:
-      name: Transition 2 target temperature
+      name: Transition 2 temperature (°C)
       selector:
         number:
           min: 0
           max: 30
-          unit_of_measurement: °C
           mode: box
+          unit_of_measurement: °C
+      required: false
     transition2_time:
-      name: Transition 2 trigger time
+      name: Transition 2 time
       selector:
-        number:
-          min: 0
-          max: 65535
-          unit_of_measurement: Minutes since midnight
-          mode: box          
+        time: {}
+      required: false
+
     transition3_setpoint:
-      name: Transition 3 target temperature
+      name: Transition 3 temperature (°C)
       selector:
         number:
           min: 0
           max: 30
-          unit_of_measurement: °C
           mode: box
+          unit_of_measurement: °C
+      required: false
     transition3_time:
-      name: Transition 3 trigger time
+      name: Transition 3 time
       selector:
-        number:
-          min: 0
-          max: 65535
-          unit_of_measurement: Minutes since midnight
-          mode: box
+        time: {}
+      required: false
+
     transition4_setpoint:
-      name: Transition 4 target temperature
+      name: Transition 4 temperature (°C)
       selector:
         number:
           min: 0
           max: 30
-          unit_of_measurement: °C
           mode: box
+          unit_of_measurement: °C
+      required: false
     transition4_time:
-      name: Transition 4 trigger time
+      name: Transition 4 time
       selector:
-        number:
-          min: 0
-          max: 65535
-          unit_of_measurement: Minutes since midnight
-          mode: box 
+        time: {}
+      required: false
+
     transition5_setpoint:
-      name: Transition 5 target temperature
+      name: Transition 5 temperature (°C)
       selector:
         number:
           min: 0
           max: 30
-          unit_of_measurement: °C
           mode: box
+          unit_of_measurement: °C
+      required: false
     transition5_time:
-      name: Transition 5 trigger time
+      name: Transition 5 time
       selector:
-        number:
-          min: 0
-          max: 65535
-          unit_of_measurement: Minutes since midnight
-          mode: box
+        time: {}
+      required: false
+
     transition6_setpoint:
-      name: Transition 6 target temperature
+      name: Transition 6 temperature (°C)
       selector:
         number:
           min: 0
           max: 30
+          mode: box
           unit_of_measurement: °C
-          mode: box
+      required: false
     transition6_time:
-      name: Transition 6 trigger time
+      name: Transition 6 time
       selector:
-        number:
-          min: 0
-          max: 65535
-          unit_of_measurement: Minutes since midnight
-          mode: box
+        time: {}
+      required: false
 
 variables:
-  ally_trv: !input ally_trv
-  schedule: !input schedule
-  transition1_setpoint: !input transition1_setpoint
-  transition1_time: !input transition1_time
-  transition2_setpoint: !input transition2_setpoint
-  transition2_time: !input transition2_time
-  transition3_setpoint: !input transition3_setpoint
-  transition3_time: !input transition3_time
-  transition4_setpoint: !input transition4_setpoint
-  transition4_time: !input transition4_time
-  transition5_setpoint: !input transition5_setpoint
-  transition5_time: !input transition5_time
-  transition6_setpoint: !input transition6_setpoint
-  transition6_time: !input transition6_time
+  device_name: "{{ device_attr(inputs.ally_trv, 'name') }}"
+  day_list: "{{ inputs.schedule_days }}"
+  transition_count: "{{ inputs.transition_count | int }}"
 
-sequence:
+trigger: []
+
+action:
   - variables:
-      bitmap: >-
-        {% set ns = namespace(bitmap=0) %}
-        {% for day in schedule %}
-          {% set ns.bitmap = ns.bitmap + (day | int) %}
-        {% endfor %}
-        {{ ns.bitmap }}
-      transitions: >-
+      transition_entities: >
         [
-          {"heatSetpoint": {{ transition1_setpoint }}, "transitionTime": {"hour": {{ (transition1_time | int // 60) }}, "minute": {{ (transition1_time | int % 60) }}}},
-          {"heatSetpoint": {{ transition2_setpoint }}, "transitionTime": {"hour": {{ (transition2_time | int // 60) }}, "minute": {{ (transition2_time | int % 60) }}}},
-          {"heatSetpoint": {{ transition3_setpoint }}, "transitionTime": {"hour": {{ (transition3_time | int // 60) }}, "minute": {{ (transition3_time | int % 60) }}}},
-          {"heatSetpoint": {{ transition4_setpoint }}, "transitionTime": {"hour": {{ (transition4_time | int // 60) }}, "minute": {{ (transition4_time | int % 60) }}}},
-          {"heatSetpoint": {{ transition5_setpoint }}, "transitionTime": {"hour": {{ (transition5_time | int // 60) }}, "minute": {{ (transition5_time | int % 60) }}}},
-          {"heatSetpoint": {{ transition6_setpoint }}, "transitionTime": {"hour": {{ (transition6_time | int // 60) }}, "minute": {{ (transition6_time | int % 60) }}}}
+          {"temp": inputs.transition1_setpoint, "time": inputs.transition1_time},
+          {"temp": inputs.transition2_setpoint, "time": inputs.transition2_time},
+          {"temp": inputs.transition3_setpoint, "time": inputs.transition3_time},
+          {"temp": inputs.transition4_setpoint, "time": inputs.transition4_time},
+          {"temp": inputs.transition5_setpoint, "time": inputs.transition5_time},
+          {"temp": inputs.transition6_setpoint, "time": inputs.transition6_time}
         ]
+  - variables:
+      transitions: >
+        {% set output = [] %}
+        {% for t in transition_entities[:transition_count] %}
+          {% if t.temp is not none and t.time is not none %}
+            {% set parts = t.time.split(':') %}
+            {% set hour = parts[0] | int %}
+            {% set minute = parts[1] | int %}
+            {% set trans = {"heating_setpoint": t.temp, "time": hour * 60 + minute} %}
+            {% set output = output + [trans] %}
+          {% endif %}
+        {% endfor %}
+        {{ output | to_json }}
   - service: mqtt.publish
     data:
-      topic: zigbee2mqtt/{{ device_attr(ally_trv, 'name') }}/set
-      payload: >-
+      topic: "zigbee2mqtt/{{ device_name }}/set"
+      payload: |
         {
           "weekly_schedule": {
-            "dayofweek": {{ bitmap }},
+            "days": {{ day_list | to_json }},
             "transitions": {{ transitions }}
           }
         }
+  - wait_for_trigger:
+      - platform: mqtt
+        topic: "zigbee2mqtt/{{ device_name }}"
+        value_template: >
+          {% set ws = value_json.weekly_schedule %}
+          {% if ws is not defined %}
+            false
+          {% else %}
+            {% set days_match = ws.days | sort == day_list | sort %}
+            {% set sent_trans = transitions | from_json %}
+            {% set received_trans = ws.transitions %}
+            {% set trans_match = sent_trans == received_trans %}
+            {{ days_match and trans_match }}
+          {% endif %}
+    timeout: "00:00:30"
+    continue_on_timeout: false
+  - service: persistent_notification.create
+    data:
+      title: "Danfoss Ally Weekly Schedule"
+      message: "✅ Schedule set to {{ device_name }}."

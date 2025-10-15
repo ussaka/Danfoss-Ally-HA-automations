@@ -13,17 +13,17 @@ Major version number (=v1.x.x) will be updated if any breaking changes are imple
 ### Get weekly schedule
 Get weekly schedule from a Danfoss Ally eTRV device. Sends a persistent notification with all schedule transitions for the selected day.
 
-[PLACEHOLDER for import link]
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Fblob%2Fussaka%2Ffix-set-and-add-get-clear-scripts%2Fscripts%2Fdanfoss_ally_get_schedule.yaml)
 
 ### Set weekly schedule
 Set weekly schedule to a Danfoss Ally eTRV device for the selected days.
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Freleases%2Fdownload%2Fset-schedule-v2.0.0%2Fdanfoss_ally_set_schedule.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Fblob%2Fussaka%2Ffix-set-and-add-get-clear-scripts%2Fscripts%2Fdanfoss_ally_set_schedule.yaml)
 
 ### Clear weekly schedule
 Clear weekly schedule from Danfoss Ally eTRV device for all the days.
 
-[PLACEHOLDER for import link]
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fussaka%2FDanfoss-Ally-HA-automations%2Fblob%2Fussaka%2Ffix-set-and-add-get-clear-scripts%2Fscripts%2Fdanfoss_ally_clear_schedule.yaml)
 
 # External temperature sensor automation
 [Blueprint](https://community.home-assistant.io/t/zigbee2mqtt-danfoss-ally-send-external-temperature-to-trv-version-2/627564/8)

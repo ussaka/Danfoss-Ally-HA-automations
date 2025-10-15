@@ -23,7 +23,6 @@ blueprint:
     schedule:
       name: Weekday
       description: Select the weekday to query the schedule for
-      required: true
       selector:
         select:
           options:

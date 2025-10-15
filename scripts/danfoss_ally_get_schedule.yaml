@@ -60,7 +60,7 @@ variables:
   selected_day: "{{ day_name_map[schedule|string] }}"
   schedule_summary: ""
 
-action:
+sequence:
   - alias: Send getWeeklySchedule for {{ selected_day }}
     service: mqtt.publish
     data:

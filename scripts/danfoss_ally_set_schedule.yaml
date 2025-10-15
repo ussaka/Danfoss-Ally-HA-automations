@@ -135,7 +135,6 @@ variables:
   
   device_name: "{{ device_attr(ally_trv, 'name') }}"
   day_list: "{{ schedule_days }}"
-  transition_count: "{{ transition_count | int }}"
 
 sequence:
   - variables:
@@ -150,7 +149,7 @@ sequence:
         ]
       transitions: >
         {% set output = [] %}
-        {% for t in transition_entities[:transition_count] %}
+        {% for t in transition_entities %}
           {% if t.temp is not none and t.time is not none %}
             {% set parts = t.time.split(':') %}
             {% set hour = parts[0] | int %}

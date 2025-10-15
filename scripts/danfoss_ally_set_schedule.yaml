@@ -36,7 +36,6 @@ blueprint:
               value: saturday
             - label: Sunday
               value: sunday
-      required: true
 
     transition1_setpoint:
       name: Transition 1 temperature (°C)
@@ -46,12 +45,10 @@ blueprint:
           max: 30
           mode: box
           unit_of_measurement: °C
-      required: false
     transition1_time:
       name: Transition 1 time
       selector:
         time: {}
-      required: false
 
     transition2_setpoint:
       name: Transition 2 temperature (°C)
@@ -61,12 +58,10 @@ blueprint:
           max: 30
           mode: box
           unit_of_measurement: °C
-      required: false
     transition2_time:
       name: Transition 2 time
       selector:
         time: {}
-      required: false
 
     transition3_setpoint:
       name: Transition 3 temperature (°C)
@@ -76,12 +71,10 @@ blueprint:
           max: 30
           mode: box
           unit_of_measurement: °C
-      required: false
     transition3_time:
       name: Transition 3 time
       selector:
         time: {}
-      required: false
 
     transition4_setpoint:
       name: Transition 4 temperature (°C)
@@ -91,12 +84,10 @@ blueprint:
           max: 30
           mode: box
           unit_of_measurement: °C
-      required: false
     transition4_time:
       name: Transition 4 time
       selector:
         time: {}
-      required: false
 
     transition5_setpoint:
       name: Transition 5 temperature (°C)
@@ -106,12 +97,10 @@ blueprint:
           max: 30
           mode: box
           unit_of_measurement: °C
-      required: false
     transition5_time:
       name: Transition 5 time
       selector:
         time: {}
-      required: false
 
     transition6_setpoint:
       name: Transition 6 temperature (°C)
@@ -121,12 +110,10 @@ blueprint:
           max: 30
           mode: box
           unit_of_measurement: °C
-      required: false
     transition6_time:
       name: Transition 6 time
       selector:
         time: {}
-      required: false
 
 variables:
   device_name: "{{ device_attr(inputs.ally_trv, 'name') }}"

@@ -45,7 +45,7 @@ sequence:
   - alias: Set Notification Message
     variables:
       clear_summary: >-
-        Danfoss Ally schedule cleared for **{{ device_name }}**.
+        Danfoss Ally schedule cleared for '{{ device_name }}'.
 
   - alias: Final Notification
     service: persistent_notification.create

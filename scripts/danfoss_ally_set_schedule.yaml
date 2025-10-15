@@ -121,7 +121,7 @@ variables:
 
 trigger: []
 
-action:
+sequence:
   - variables:
       transition_entities: >
         [
@@ -132,7 +132,6 @@ action:
           {"temp": inputs.transition5_setpoint, "time": inputs.transition5_time},
           {"temp": inputs.transition6_setpoint, "time": inputs.transition6_time}
         ]
-  - variables:
       transitions: >
         {% set output = [] %}
         {% for t in transition_entities[:transition_count] %}

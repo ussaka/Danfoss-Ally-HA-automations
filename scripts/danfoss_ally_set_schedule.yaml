@@ -115,20 +115,20 @@ blueprint:
         time: {}
 
 variables:
-  device_name: "{{ device_attr(inputs.ally_trv, 'name') }}"
-  day_list: "{{ inputs.schedule_days }}"
-  transition_count: "{{ inputs.transition_count | int }}"
+  device_name: "{{ device_attr(ally_trv, 'name') }}"
+  day_list: "{{ schedule_days }}"
+  transition_count: "{{ transition_count | int }}"
 
 sequence:
   - variables:
       transition_entities: >
         [
-          {"temp": inputs.transition1_setpoint, "time": inputs.transition1_time},
-          {"temp": inputs.transition2_setpoint, "time": inputs.transition2_time},
-          {"temp": inputs.transition3_setpoint, "time": inputs.transition3_time},
-          {"temp": inputs.transition4_setpoint, "time": inputs.transition4_time},
-          {"temp": inputs.transition5_setpoint, "time": inputs.transition5_time},
-          {"temp": inputs.transition6_setpoint, "time": inputs.transition6_time}
+          {"temp": transition1_setpoint, "time": transition1_time},
+          {"temp": transition2_setpoint, "time": transition2_time},
+          {"temp": transition3_setpoint, "time": transition3_time},
+          {"temp": transition4_setpoint, "time": transition4_time},
+          {"temp": transition5_setpoint, "time": transition5_time},
+          {"temp": transition6_setpoint, "time": transition6_time}
         ]
       transitions: >
         {% set output = [] %}

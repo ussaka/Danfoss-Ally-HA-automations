@@ -6,7 +6,7 @@ blueprint:
     **Version: 2.0.1**
 
     [Need help?](https://github.com/ussaka/Danfoss-Ally-HA-integration?tab=readme-ov-file#get-weekly-schedule-script)
-  domain: automation
+  domain: script
   input:
     ally_trv:
       name: Danfoss Ally eTRV

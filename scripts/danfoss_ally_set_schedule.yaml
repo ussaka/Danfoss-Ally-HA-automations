@@ -10,10 +10,13 @@ blueprint:
   input:
     ally_trv:
       name: Danfoss Ally eTRV
+      description: Select the Ally eTRV
       selector:
         device:
           entity:
-            domain: climate
+            - domain:
+                - climate
+          multiple: false
     schedule_days:
       name: Weekdays
       selector:
@@ -115,6 +118,21 @@ blueprint:
         time: {}
 
 variables:
+  ally_trv: !input ally_trv
+  schedule_days: !input schedule_days
+  transition1_setpoint: !input transition1_setpoint
+  transition1_time: !input transition1_time
+  transition2_setpoint: !input transition2_setpoint
+  transition2_time: !input transition2_time
+  transition3_setpoint: !input transition3_setpoint
+  transition3_time: !input transition3_time
+  transition4_setpoint: !input transition4_setpoint
+  transition4_time: !input transition4_time
+  transition5_setpoint: !input transition5_setpoint
+  transition5_time: !input transition5_time
+  transition6_setpoint: !input transition6_setpoint
+  transition6_time: !input transition6_time
+  
   device_name: "{{ device_attr(ally_trv, 'name') }}"
   day_list: "{{ schedule_days }}"
   transition_count: "{{ transition_count | int }}"

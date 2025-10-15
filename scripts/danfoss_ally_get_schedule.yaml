@@ -47,6 +47,8 @@ mode: single
 max_exceeded: silent
 
 variables:
+  ally_trv: !input ally_trv
+  schedule: !input schedule
   day_bitmap: "{{ schedule | int }}"
   device_name: "{{ device_attr(ally_trv, 'name') }}"
   day_name_map:

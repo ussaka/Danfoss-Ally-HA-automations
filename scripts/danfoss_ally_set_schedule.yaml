@@ -14,7 +14,6 @@ blueprint:
         device:
           entity:
             domain: climate
-      required: true
     schedule_days:
       name: Weekdays
       selector:
